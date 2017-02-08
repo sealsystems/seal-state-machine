@@ -1,6 +1,6 @@
 {
   "name": "seal-state-machine",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Finite state machine",
   "author": {
     "name": "SEAL Systems AG",
