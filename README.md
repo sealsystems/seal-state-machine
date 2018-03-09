@@ -1,4 +1,4 @@
-# seal-state-machine
+# @sealsystems/state-machine
 
 [![CircleCI](https://circleci.com/gh/sealsystems/seal-state-machine.svg?style=svg)](https://circleci.com/gh/sealsystems/seal-state-machine)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/6trqwybv62iq9k9o?svg=true)](https://ci.appveyor.com/project/Plossys/seal-state-machine)
@@ -8,15 +8,15 @@ Finite state machine.
 ## Installation
 
 ```bash
-$ npm install seal-state-machine
+$ npm install @sealsystems/state-machine
 ```
 
 ## Quick start
 
-First you need to integrate seal-state-machine into your application.
+First you need to integrate @sealsystems/state-machine into your application.
 
 ```javascript
-const stateMachine = require('seal-state-machine');
+const stateMachine = require('@sealsystems/state-machine');
 ```
 
 Then create your own constructor function or use an empty default one to create a new state machine.
