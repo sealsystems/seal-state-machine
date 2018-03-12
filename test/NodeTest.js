@@ -90,7 +90,7 @@ suite('stateMachine.Node', () => {
   });
 
   test('leave function creates leave transition', (done) => {
-    testNode.leave(() => {
+    testNode.leave(async () => {
     });
     assert.that(testNode.leaveTransition).is.not.undefined();
     assert.that(testNode.leaveTransition.getName()).is.equalTo('leave');
@@ -112,139 +112,98 @@ suite('stateMachine.Node', () => {
   });
 
   test('enter function creates enter transition', (done) => {
-    testNode.enter(() => {
+    testNode.enter(async () => {
     });
     assert.that(testNode.enterTransition).is.not.undefined();
     assert.that(testNode.enterTransition.getName()).is.equalTo('enter');
     done();
   });
 
-  test('runLeave function throws error if machine is missing', (done) => {
-    assert.that(() => {
-      testNode.runLeave();
-    }).is.throwing('Machine is missing.');
-    done();
+  test('runLeave function throws error if machine is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runLeave();
+    }).is.throwingAsync('Machine is missing.');
   });
 
-  test('runLeave function throws error if payload is missing', (done) => {
-    assert.that(() => {
-      testNode.runLeave({});
-    }).is.throwing('Payload is missing.');
-    done();
+  test('runLeave function throws error if payload is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runLeave({});
+    }).is.throwingAsync('Payload is missing.');
   });
 
-  test('runLeave function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      testNode.runLeave({}, {});
-    }).is.throwing('Callback is missing.');
-    done();
-  });
-
-  test('runLeave function calls leave function', (done) => {
+  test('runLeave function calls leave function', async () => {
     let leaveCalled = 0;
 
-    testNode.leave((node, transition, payload, cb) => {
+    testNode.leave(async () => {
       leaveCalled++;
-      cb(null);
     });
-    testNode.runLeave({}, {}, (err) => {
-      assert.that(err).is.null();
-      assert.that(leaveCalled).is.equalTo(1);
-      done();
-    });
+
+    await testNode.runLeave({}, {});
+
+    assert.that(leaveCalled).is.equalTo(1);
   });
 
-  test('runLeave function calls callback if leave function is undefined', (done) => {
-    testNode.runLeave({}, {}, (err) => {
-      assert.that(err).is.null();
-      done();
-    });
+  test('runLeave function returns if leave function is undefined', async () => {
+    await testNode.runLeave({}, {});
   });
 
-  test('runEnter function throws error if machine is missing', (done) => {
-    assert.that(() => {
-      testNode.runEnter();
-    }).is.throwing('Machine is missing.');
-    done();
+  test('runEnter function throws error if machine is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runEnter();
+    }).is.throwingAsync('Machine is missing.');
   });
 
-  test('runEnter function throws error if payload is missing', (done) => {
-    assert.that(() => {
-      testNode.runEnter({});
-    }).is.throwing('Payload is missing.');
-    done();
+  test('runEnter function throws error if payload is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runEnter({});
+    }).is.throwingAsync('Payload is missing.');
   });
 
-  test('runEnter function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      testNode.runEnter({}, {});
-    }).is.throwing('Callback is missing.');
-    done();
-  });
-
-  test('runEnter function calls enter function', (done) => {
+  test('runEnter function calls enter function', async () => {
     let enterCalled = 0;
 
-    testNode.enter((node, transition, payload, cb) => {
+    testNode.enter(async () => {
       enterCalled++;
-      cb(null);
     });
-    testNode.runEnter({}, {}, (err) => {
-      assert.that(err).is.null();
-      assert.that(enterCalled).is.equalTo(1);
-      done();
-    });
+
+    await testNode.runEnter({}, {});
+
+    assert.that(enterCalled).is.equalTo(1);
   });
 
-  test('runEnter function calls callback if enter function is undefined', (done) => {
-    testNode.runEnter({}, {}, (err) => {
-      assert.that(err).is.null();
-      done();
-    });
+  test('runEnter function returns if enter function is undefined', async () => {
+    await testNode.runEnter({}, {});
   });
 
-  test('runTransit function throws error if machine is missing', (done) => {
-    assert.that(() => {
-      testNode.runTransit();
-    }).is.throwing('Machine is missing.');
-    done();
+  test('runTransit function throws error if machine is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runTransit();
+    }).is.throwingAsync('Machine is missing.');
   });
 
-  test('runTransit function throws error if transition name missing', (done) => {
-    assert.that(() => {
-      testNode.runTransit({});
-    }).is.throwing('Transition name is missing.');
-    done();
+  test('runTransit function throws error if transition name missing', async () => {
+    await assert.that(async () => {
+      await testNode.runTransit({});
+    }).is.throwingAsync('Transition name is missing.');
   });
 
-  test('runTransit function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      testNode.runTransit({}, 'silius');
-    }).is.throwing('Callback is missing.');
-    done();
+  test('runTransit function throws error if transition is missing', async () => {
+    await assert.that(async () => {
+      await testNode.runTransit({}, 'kill nero', {});
+    }).is.throwingAsync('Transition missing.');
   });
 
-  test('runTransit function returns error if transition is missing', (done) => {
-    testNode.runTransit({}, 'kill nero', {}, (err, nextNode) => {
-      assert.that(err.message).is.equalTo('Transition missing.');
-      assert.that(nextNode).is.equalTo('Test');
-      done();
-    });
-  });
-
-  test('runTransit function executes transition', (done) => {
+  test('runTransit function executes transition', async () => {
     let transits = 0;
 
-    testNode.transition('galba', 'Test', (node, transition, payload, cb) => {
+    testNode.transition('galba', 'Test', async (node, transition, payload) => {
       transits++;
       assert.that(payload.pay).is.equalTo('now');
-      cb(null);
     });
-    testNode.runTransit({}, 'galba', { pay: 'now' }, (err, nextNode) => {
-      assert.that(err).is.null();
-      assert.that(nextNode).is.equalTo('Test');
-      assert.that(transits).is.equalTo(1);
-      done();
-    });
+
+    const nextNode = await testNode.runTransit({}, 'galba', { pay: 'now' });
+
+    assert.that(nextNode).is.equalTo('Test');
+    assert.that(transits).is.equalTo(1);
   });
 });

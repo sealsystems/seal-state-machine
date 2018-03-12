@@ -34,9 +34,8 @@ Add nodes and transitions and set default start node.
 const node = MyMachine.prototype.node('Lasagne');
 MyMachine.prototype.node('NothingLeft');
 
-node.transition('Garfield', 'NothingLeft', (node, transition, done) => {
+node.transition('Garfield', 'NothingLeft', async (node, transition) => {
   console.log('Soon it will be eaten');
-  done();
 });
 MyMachine.prototype.initialNode('Lasagne');
 ```
@@ -46,7 +45,7 @@ Instaniate machine object and use it.
 const myMachine = new MyMachine();
 
 console.log(myMachine.getCurrentNode());
-myMachine.transit('Garfield');
+await myMachine.transit('Garfield');
 console.log(myMachine.getCurrentNode());
 ```
 
@@ -91,48 +90,42 @@ Object structure:
 }
 ```
 
-### Machine.preTransition(preTransitCallback)
+### Machine.preTransition(async preTransitCallback)
 
-- preTransitCallback(node, transition, payload, callback) - Transition callback. Node is leaving node, transition
+- async preTransitCallback(node, transition, payload, callback) - Transition callback (async). Node is leaving node, transition
   name is always `preTransition`
 
-Sets a callback which is always called my the machine before any transition is executed.
+Sets a async callback which is always called by the machine before any transition is executed.
 
-### Machine.postTransition(postTransitCallback)
+### Machine.postTransition(async postTransitCallback)
 
-- postTransitCallback(node, transition, payload, callback) - Transition callback. Node is new entered node, transition
+- async postTransitCallback(node, transition, payload, callback) - Transition callback (async). Node is new entered node, transition
   name is always `postTransition`
 
-Sets a callback which is always called my the machine after any transition is executed successfully.
+Sets a async callback which is always called by the machine after any transition is executed successfully.
 
-### Machine.transit(transitionName [, payload], callback)
+### (async) Machine.transit(transitionName [, payload])
 
 - `transitionName` - Name of transition to execute.
 - `payload` optional The runtime data of the transition. If omitted, an empty object will be created.
-- `callback(err, nodeName, payload)` - Is called after transit finished.
-  - `err` Is set when an error occurred
-  - `nodeName` is the name of the new currentNode. `nodeName` may be set even if an error occurred, depending on which part
-    of the transition failed.
-  - `payload` The resulting transition payload, if no error occurred.
 
-Execute a transit.
+Execute a transit (async) and returns the `nodeName`, which is the name of the new currentNode.
 
 ### Node.getName()
 
 Returns name of the node.
 
-### Node.transition(transitionName, nextNode, executeFunction)
+### Node.transition(transitionName, nextNode, async executeFunction)
 
 - `transitionName` - Arbitrary name to identify the transition
 - `nextNode` - Name of the node after the transit finished successfully
-- `executeFunction(node, transition, payload, callback)` - The function to execute the transit. It is called as member function
+- `async executeFunction(node, transition, payload)` - The function to execute the transit. It is called as member function
   of Machine object.
   - `this` is the Machine instance.
   - `node` is the object of the leaving node.
   - `transition` is the executing transition object.
   - `payload` is the runtime data object of the transition and is passed to all callbacks from `preTransition`
-    to `postTransition`.
-  - The `callback` functions when finished executing transition. It expects an error object in case the transition failed or null.
+    to `postTransition`..
 
 Add a new transition to a node. Returns the node object.
 
@@ -142,19 +135,17 @@ Add a new transition to a node. Returns the node object.
 
 Returns transition object with given name or undefined if transition does not exist.
 
-### Node.leave(leaveFunction)
+### Node.leave(async leaveFunction)
 
-- leaveFunction(node, transition, payload, callback) - Called before a transit when the node is going to be left.
+- async leaveFunction(node, transition, payload) - Called before a transit when the node is going to be left.
   The `node`is the node object to be left, `transition` is a helper transition with the name `leave`.
-  The `callback` functions expects an error object in case leaving node failed or null.
 
 Set function which is always called when a node is going to be left. Returns the node object.
 
-### Node.enter(enterFunction)
+### Node.enter(async enterFunction)
 
-- enterFunction(node, transition, payload, callback) - Called after a transit when the node is already entered.
+- async enterFunction(node, transition, payload) - Called after a transit when the node is already entered.
   The `node`is the node object entered, `transition` is a helper transition with the name `enter`.
-  The `callback` functions expects an error object in case entering node failed or null.
 
 Set function which is always called when the node is entered after a transit. Returns the node object.
 

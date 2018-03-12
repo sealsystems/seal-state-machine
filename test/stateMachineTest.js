@@ -41,25 +41,23 @@ suite('stateMachine.index', () => {
     done();
   });
 
-  test('changes between states', (done) => {
+  test('changes between states', async () => {
     let endCalled = 0;
     let startCalled = 0;
     const MyConstructor = function () {};
 
     stateMachine.extend(MyConstructor);
-    MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', (currentNode, transition, payload, callback) => {
+    MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', async (currentNode, transition, payload) => {
       endCalled++;
       payload.job = 4712;
       assert.that(currentNode.getName()).is.equalTo('start');
       assert.that(transition.getName()).is.equalTo('thisIsTheEnd');
-      callback(null);
     });
-    MyConstructor.prototype.node('end').transition('andAgain', 'start', (currentNode, transition, payload, callback) => {
+    MyConstructor.prototype.node('end').transition('andAgain', 'start', async (currentNode, transition, payload) => {
       startCalled++;
       payload.job++;
       assert.that(currentNode.getName()).is.equalTo('end');
       assert.that(transition.getName()).is.equalTo('andAgain');
-      callback(null);
     });
 
     const myMachine = new MyConstructor();
@@ -67,29 +65,27 @@ suite('stateMachine.index', () => {
     myMachine.initialNode('start');
     assert.that(myMachine.getCurrentNode()).is.equalTo('start');
 
-    myMachine.transit('thisIsTheEnd', (err, nextNode, payload) => {
-      assert.that(err).is.null();
-      assert.that(nextNode).is.equalTo('end');
-      assert.that(payload.job).is.equalTo(4712);
+    const { nextNode, payload } = await myMachine.transit('thisIsTheEnd');
 
-      myMachine.transit('andAgain', payload, (err2, nextNode2) => {
-        assert.that(err2).is.null();
-        assert.that(nextNode2).is.equalTo('start');
-        assert.that(payload.job).is.equalTo(4713);
+    assert.that(nextNode).is.equalTo('end');
+    assert.that(payload.job).is.equalTo(4712);
 
-        assert.that(startCalled).is.equalTo(1);
-        assert.that(endCalled).is.equalTo(1);
-        done();
-      });
-    });
+    const result = await myMachine.transit('andAgain', payload);
+    const nextNode2 = result.nextNode;
+
+    assert.that(nextNode2).is.equalTo('start');
+    assert.that(payload.job).is.equalTo(4713);
+
+    assert.that(startCalled).is.equalTo(1);
+    assert.that(endCalled).is.equalTo(1);
   });
 
   test('override default initial node', (done) => {
     const MyConstructor = function () {};
 
     stateMachine.extend(MyConstructor);
-    MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', () => {});
-    MyConstructor.prototype.node('end').transition('andAgain', 'start', () => {});
+    MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', async () => {});
+    MyConstructor.prototype.node('end').transition('andAgain', 'start', async () => {});
     MyConstructor.prototype.initialNode('end');
 
     const myMachine = new MyConstructor();
