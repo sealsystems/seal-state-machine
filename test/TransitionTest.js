@@ -28,7 +28,7 @@ suite('stateMachine.Transition', () => {
     done();
   });
 
-  test('throws error if callback is missing', (done) => {
+  test('throws error if execute is missing', (done) => {
     assert.that(() => {
       /* eslint-disable no-new */
       new Transition('vitellius', 'vespasian');
@@ -53,58 +53,42 @@ suite('stateMachine.Transition', () => {
     done();
   });
 
-  test('runTransit function throws error if machine is missing', (done) => {
+  test('runTransit function throws error if machine is missing', async () => {
     const transition = new Transition('fromNerva', 'trajan', () => {
     });
 
-    assert.that(() => {
-      transition.runTransit();
-    }).is.throwing('Machine is missing.');
-    done();
+    await assert.that(async () => {
+      await transition.runTransit();
+    }).is.throwingAsync('Machine is missing.');
   });
 
-  test('runTransit function throws error if node is missing', (done) => {
+  test('runTransit function throws error if node is missing', async () => {
     const transition = new Transition('fromTrajan', 'hadrian', () => {
     });
 
-    assert.that(() => {
-      transition.runTransit({});
-    }).is.throwing('Node is missing.');
-    done();
+    await assert.that(async () => {
+      await transition.runTransit({});
+    }).is.throwingAsync('Node is missing.');
   });
 
-  test('runTransit function throws error if payload is missing', (done) => {
+  test('runTransit function throws error if payload is missing', async () => {
     const transition = new Transition('fromHadrian', 'Antoninus Pius', () => {
     });
 
-    assert.that(() => {
-      transition.runTransit({}, {});
-    }).is.throwing('Payload is missing.');
-    done();
+    await assert.that(async () => {
+      await transition.runTransit({}, {});
+    }).is.throwingAsync('Payload is missing.');
   });
 
-  test('runTransit function throws error if callback is missing', (done) => {
-    const transition = new Transition('fromHadrian', 'Antoninus Pius', () => {
-    });
-
-    assert.that(() => {
-      transition.runTransit({}, {}, {});
-    }).is.throwing('Callback is missing.');
-    done();
-  });
-
-  test('runTransit function call execution callback', (done) => {
+  test('runTransit function call execution callback', async () => {
     let executed = 0;
-    const transition = new Transition('fromAntonius', 'Mark Aurel', (machine, node, payload, callback) => {
+    const transition = new Transition('fromAntonius', 'Mark Aurel', async () => {
       executed++;
-      callback(null);
     });
 
-    transition.runTransit({}, {}, {}, (err, nextNode) => {
-      assert.that(err).is.null();
-      assert.that(executed).is.equalTo(1);
-      assert.that(nextNode).is.equalTo('Mark Aurel');
-      done();
-    });
+    const nextNode = await transition.runTransit({}, {}, {});
+
+    assert.that(executed).is.equalTo(1);
+    assert.that(nextNode).is.equalTo('Mark Aurel');
   });
 });

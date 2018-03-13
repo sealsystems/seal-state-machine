@@ -95,254 +95,211 @@ suite('stateMachine.Machine', () => {
     done();
   });
 
-  test('transit function throws error if transition name is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.transit();
-    }).is.throwing('Transition name is missing.');
-    done();
+  test('transit function throws error if transition name is missing', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.transit();
+    }).is.throwingAsync('Transition name is missing.');
   });
 
-  test('transit function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.transit('a-z');
-    }).is.throwing('Callback is missing.');
-    done();
+  test('transit function throws error if initial node is missing', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.transit('a-z');
+    }).is.throwingAsync('Initial node is missing.');
   });
 
-  test('transit function throws error if initial node is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.transit('a-z', () => {
-      });
-    }).is.throwing('Initial node is missing.');
-    done();
-  });
-
-  test('transit function returns error if leave callback fails', (done) => {
+  test('transit function throws an error if leave-execution callback fails', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('bleibDa', 'hugo', () => {
+    Hugo.transition('bleibDa', 'hugo', async () => {
       assert.that(true).is.false();
     });
-    Hugo.leave((node, transition, payload, cb) => {
-      cb(new Error('ohoh'));
+    Hugo.leave(async () => {
+      throw new Error('ohoh');
     });
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('bleibDa', (errTransit) => {
-      assert.that(errTransit.message).is.equalTo('ohoh');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('bleibDa');
+    }).is.throwingAsync('ohoh');
   });
 
-  test('transit function returns error if execution callback fails', (done) => {
+  test('transit function throws an error if execution callback fails', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('bleibDa', 'hugo', (node, transition, payload, callback) => {
-      callback(new Error('hopperla'));
+    Hugo.transition('bleibDa', 'hugo', async () => {
+      throw new Error('hopperla');
     });
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('bleibDa', (errTransit) => {
-      assert.that(errTransit.message).is.equalTo('hopperla');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('bleibDa');
+    }).is.throwingAsync('hopperla');
   });
 
-  test('transit function succeeds if transition is unknown', (done) => {
+  test('transit function throws an error if transition is unknown', async () => {
     TestMachine.prototype.node('hugo');
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('nichtDa', (errTransit, nextNode) => {
-      assert.that(errTransit.message).is.equalTo('Transition missing.');
-      assert.that(nextNode).is.equalTo('hugo');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('nichtDa');
+    }).is.throwingAsync('Transition missing.');
   });
 
-  test('transit function throws error if next node is unknown', (done) => {
+  test('transit function throws error if next node is unknown', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('gehe-ins', 'nirvana', (node, transition, payload, callback) => {
-      callback();
+    Hugo.transition('gehe-ins', 'nirvana', async () => {
     });
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    assert.that(() => {
-      testMachine.transit('gehe-ins', () => {
-        assert.that(true).is.false();
-      });
-    }).is.throwing('Invalid node name.');
-    done();
+    await assert.that(async () => {
+      await testMachine.transit('gehe-ins');
+    }).is.throwingAsync('Invalid node name.');
   });
 
-  test('transit function returns error if enter callback fails', (done) => {
+  test('transit function returns error if enter callback fails', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('bleibDa', 'hugo', (node, transition, payload, callback) => {
-      callback();
+    Hugo.transition('bleibDa', 'hugo', async () => {
     });
-    Hugo.enter((node, transition, payload, cb) => {
-      cb(new Error('noe'));
+    Hugo.enter(async () => {
+      throw new Error('noe');
     });
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('bleibDa', (errTransit) => {
-      assert.that(errTransit.message).is.equalTo('noe');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('bleibDa');
+    }).is.throwingAsync('noe');
   });
 
-  test('transit function executes transitions', (done) => {
+  test('transit function executes transitions', async () => {
     TestMachine.prototype.markAurel = 'Mark Aurel';
     TestMachine.prototype.verus = 'Verus';
     TestMachine.prototype.commodus = 'Commodus';
 
     TestMachine.prototype.node(TestMachine.prototype.markAurel);
     TestMachine.prototype.node(TestMachine.prototype.verus).
-    transition('predecessor', TestMachine.prototype.markAurel, (node, transition, payload, callback) => {
-      callback(null);
-    }).
-    transition('successor', TestMachine.prototype.commodus, (node, transition, payload, callback) => {
-      callback(null);
-    });
+      transition('predecessor', TestMachine.prototype.markAurel, async () => {
+      }).
+      transition('successor', TestMachine.prototype.commodus, async () => {
+      });
     TestMachine.prototype.node(TestMachine.prototype.commodus).
-    transition('predecessor', TestMachine.prototype.verus, (node, transition, payload, callback) => {
-      callback(null);
-    });
+      transition('predecessor', TestMachine.prototype.verus, async () => {
+      });
 
     TestMachine.prototype.initialNode('Verus');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('successor', (errTransit) => {
-      assert.that(errTransit).is.null();
-      assert.that(testMachine.getPreviousNode()).is.equalTo(testMachine.verus);
-      assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.commodus);
-      testMachine.transit('predecessor', (errPre1) => {
-        assert.that(errPre1).is.null();
-        assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.verus);
-        testMachine.transit('predecessor', (errPre2) => {
-          assert.that(errPre2).is.null();
-          assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.markAurel);
-          done();
-        });
-      });
-    });
+    await testMachine.transit('successor');
+    assert.that(testMachine.getPreviousNode()).is.equalTo(testMachine.verus);
+    assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.commodus);
+
+    await testMachine.transit('predecessor');
+    assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.verus);
+
+    await testMachine.transit('predecessor');
+    assert.that(testMachine.getCurrentNode()).is.equalTo(testMachine.markAurel);
   });
 
-  test('transit function inhibits parallel executions', (done) => {
+  test('transit function inhibits parallel executions', async () => {
     TestMachine.prototype.node('Pertinax').
-    transition('stays', 'Pertinax', (node, transition, payload, callback) => {
-      setTimeout(() => {
-        callback(null);
-      }, 100);
-    });
+      transition('stays', 'Pertinax', async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
 
     TestMachine.prototype.initialNode('Pertinax');
 
     const testMachine = new TestMachine();
 
     assert.that(testMachine.getCurrentTransition()).is.undefined();
-    testMachine.transit('stays', (err1) => {
-      assert.that(err1).is.null();
-      assert.that(testMachine.getCurrentTransition()).is.undefined();
-      done();
-    });
-    assert.that(testMachine.getCurrentTransition().transition).is.equalTo('stays');
-    testMachine.transit('stays', (err2) => {
-      assert.that(err2.message).is.equalTo('Transition running.');
-    });
+    testMachine.transit('stays');
+
+    await assert.that(async () => {
+      await testMachine.transit('stays');
+    }).is.throwingAsync('Transition running.');
   });
 
-  test('preTransition function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.preTransition();
-    }).is.throwing('Pre-transition callback is missing.');
-    done();
+  test('preTransition function throws error if callback is missing', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.preTransition();
+    }).is.throwingAsync('Pre-transition callback is missing.');
   });
 
-  test('preTransition function throws error if callback is not a function', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.preTransition({});
-    }).is.throwing('Pre-transition-callback is not a function.');
-    done();
+  test('preTransition function throws error if callback is not a function', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.preTransition({});
+    }).is.throwingAsync('Pre-transition-callback is not a function.');
   });
 
-  test('preTransition function creates preTransit transition', (done) => {
-    TestMachine.prototype.preTransition(() => {
+  test('preTransition function creates preTransit transition', async () => {
+    TestMachine.prototype.preTransition(async () => {
     });
     assert.that(TestMachine.prototype.preTransit).is.not.undefined();
     assert.that(TestMachine.prototype.preTransit.getName()).is.equalTo('preTransition');
-    done();
   });
 
-  test('postTransition function throws error if callback is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.postTransition();
-    }).is.throwing('Post-transition callback is missing.');
-    done();
+  test('postTransition function throws error if callback is missing', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.postTransition();
+    }).is.throwingAsync('Post-transition callback is missing.');
   });
 
-  test('postTransition function throws error if callback is not a function', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.postTransition({});
-    }).is.throwing('Post-transition-callback is not a function.');
-    done();
+  test('postTransition function throws error if callback is not a function', async () => {
+    await assert.that(async () => {
+      await TestMachine.prototype.postTransition({});
+    }).is.throwingAsync('Post-transition-callback is not a function.');
   });
 
-  test('postTransition function creates preTransit transition', (done) => {
-    TestMachine.prototype.postTransition(() => {
+  test('postTransition function creates preTransit transition', async () => {
+    TestMachine.prototype.postTransition(async () => {
     });
     assert.that(TestMachine.prototype.postTransit).is.not.undefined();
     assert.that(TestMachine.prototype.postTransit.getName()).is.equalTo('postTransition');
-    done();
   });
 
-  test('transit function returns error if preTransition callback fails', (done) => {
+  test('transit function returns error if preTransition callback fails', async () => {
     TestMachine.prototype.node('falco');
-    TestMachine.prototype.preTransition((node, transition, payload, cb) => {
-      cb(new Error('usurpator killed'));
+    TestMachine.prototype.preTransition(async () => {
+      throw new Error('usurpator killed');
     });
     TestMachine.prototype.initialNode('falco');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('selfish', (errTransit) => {
-      assert.that(errTransit.message).is.equalTo('usurpator killed');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('selfish');
+    }).is.throwingAsync('usurpator killed');
   });
 
-  test('transit function returns error if postTransition callback fails', (done) => {
+  test('transit function returns error if postTransition callback fails', async () => {
     TestMachine.prototype.node('Didius Julianus').
-    transition('selfish', 'Didius Julianus', (node, transition, payload, callback) => {
-      callback(null);
-    });
+      transition('selfish', 'Didius Julianus', async () => {
+      });
 
-    TestMachine.prototype.postTransition((node, transition, payload, cb) => {
-      cb(new Error('Already replaced by Septimius Severus'));
+    TestMachine.prototype.postTransition(async () => {
+      throw new Error('Already replaced by Septimius Severus');
     });
     TestMachine.prototype.initialNode('Didius Julianus');
 
     const testMachine = new TestMachine();
 
-    testMachine.transit('selfish', (errTransit) => {
-      assert.that(errTransit.message).is.equalTo('Already replaced by Septimius Severus');
-      done();
-    });
+    await assert.that(async () => {
+      await testMachine.transit('selfish');
+    }).is.throwingAsync('Already replaced by Septimius Severus');
   });
 
-  test('two machine instances share same nodes', (done) => {
+  test('two machine instances share same nodes', async () => {
     TestMachine.prototype.node('Septimius Severus');
     TestMachine.prototype.initialNode('Septimius Severus');
 
@@ -353,25 +310,21 @@ suite('stateMachine.Machine', () => {
     testMachine2.nodes['Septimius Severus'].myProp = 11;
     assert.that(testMachine1.nodes['Septimius Severus'].myProp).is.equalTo(11);
     assert.that(testMachine2.nodes['Septimius Severus'].myProp).is.equalTo(11);
-    done();
   });
 
-  test('two machine instances have different properties', (done) => {
+  test('two machine instances have different properties', async () => {
     TestMachine.prototype.node('Caracalla').
-    transition('back', 'Septimius Severus', (node, transition, payload, callback) => {
-      callback(null);
-    });
+      transition('back', 'Septimius Severus', async () => {
+      });
     TestMachine.prototype.node('Septimius Severus');
     TestMachine.prototype.initialNode('Caracalla');
 
     const testMachine1 = new TestMachine();
     const testMachine2 = new TestMachine();
 
-    testMachine1.transit('back', (errTransit) => {
-      assert.that(errTransit).is.null();
-      assert.that(testMachine1.getCurrentNode()).is.equalTo('Septimius Severus');
-      assert.that(testMachine2.getCurrentNode()).is.equalTo('Caracalla');
-      done();
-    });
+    await testMachine1.transit('back');
+
+    assert.that(testMachine1.getCurrentNode()).is.equalTo('Septimius Severus');
+    assert.that(testMachine2.getCurrentNode()).is.equalTo('Caracalla');
   });
 });
