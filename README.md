@@ -1,7 +1,7 @@
 # @sealsystems/state-machine
 
 [![CircleCI](https://circleci.com/gh/sealsystems/seal-state-machine.svg?style=svg)](https://circleci.com/gh/sealsystems/seal-state-machine)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/6trqwybv62iq9k9o?svg=true)](https://ci.appveyor.com/project/Plossys/seal-state-machine)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/viu6rbk9tp2xwhnr?svg=true)](https://ci.appveyor.com/project/Plossys/node-state-machine)
 
 Finite state machine.
 
