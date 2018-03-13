@@ -30,5 +30,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/sealsystems/node-state-machine.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
