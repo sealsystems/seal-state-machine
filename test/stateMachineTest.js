@@ -24,7 +24,8 @@ suite('stateMachine.index', () => {
   });
 
   test('returns constructor when called with parameter', (done) => {
-    const Constructor = function () {};
+    // eslint-disable-next-line no-empty-function
+    const Constructor = function() {};
     const result = stateMachine.extend(Constructor);
 
     assert.that(result).is.equalTo(Constructor);
@@ -44,15 +45,18 @@ suite('stateMachine.index', () => {
   test('changes between states', async () => {
     let endCalled = 0;
     let startCalled = 0;
-    const MyConstructor = function () {};
+    // eslint-disable-next-line no-empty-function
+    const MyConstructor = function() {};
 
     stateMachine.extend(MyConstructor);
-    MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', async (currentNode, transition, payload) => {
-      endCalled++;
-      payload.job = 4712;
-      assert.that(currentNode.getName()).is.equalTo('start');
-      assert.that(transition.getName()).is.equalTo('thisIsTheEnd');
-    });
+    MyConstructor.prototype
+      .node('start')
+      .transition('thisIsTheEnd', 'end', async (currentNode, transition, payload) => {
+        endCalled++;
+        payload.job = 4712;
+        assert.that(currentNode.getName()).is.equalTo('start');
+        assert.that(transition.getName()).is.equalTo('thisIsTheEnd');
+      });
     MyConstructor.prototype.node('end').transition('andAgain', 'start', async (currentNode, transition, payload) => {
       startCalled++;
       payload.job++;
@@ -81,10 +85,13 @@ suite('stateMachine.index', () => {
   });
 
   test('override default initial node', (done) => {
-    const MyConstructor = function () {};
+    // eslint-disable-next-line no-empty-function
+    const MyConstructor = function() {};
 
     stateMachine.extend(MyConstructor);
+    // eslint-disable-next-line no-empty-function
     MyConstructor.prototype.node('start').transition('thisIsTheEnd', 'end', async () => {});
+    // eslint-disable-next-line no-empty-function
     MyConstructor.prototype.node('end').transition('andAgain', 'start', async () => {});
     MyConstructor.prototype.initialNode('end');
 
