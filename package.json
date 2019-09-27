@@ -7,7 +7,7 @@
     "email": "opensource@sealsystems.de",
     "url": "https://www.sealsystems.de"
   },
-  "license": "MIT",
+  "license": "SEAL End User License",
   "scripts": {
     "bot": "bot",
     "release": "release",
@@ -16,7 +16,8 @@
     "lint:fix": "lint-fix",
     "test:coverage": "test-coverage",
     "test:coverage:check": "test-coverage-check",
-    "test:report": "test-report"
+    "test:report": "test-report",
+    "licenses": "license-checker --production --csv"
   },
   "main": "lib/stateMachine.js",
   "dependencies": {
@@ -35,6 +36,7 @@
     "extends": "@sealsystems/semantic-release/node-module"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "http://plossys.jfrog.io/plossys/api/npm/npm-local"
   }
 }
