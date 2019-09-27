@@ -19,11 +19,13 @@ suite('stateMachine.Node', () => {
   });
 
   test('throws error if name is missing', (done) => {
-    assert.that(() => {
-      /* eslint-disable no-new */
-      new Node();
-      /* eslint-enable no-new */
-    }).is.throwing('Node name is missing.');
+    assert
+      .that(() => {
+        /* eslint-disable no-new */
+        new Node();
+        /* eslint-enable no-new */
+      })
+      .is.throwing('Node name is missing.');
     done();
   });
 
@@ -35,29 +37,35 @@ suite('stateMachine.Node', () => {
   });
 
   test('transition function throws error if transition name is missing', (done) => {
-    assert.that(() => {
-      testNode.transition();
-    }).is.throwing('Transition name is missing.');
+    assert
+      .that(() => {
+        testNode.transition();
+      })
+      .is.throwing('Transition name is missing.');
     done();
   });
 
   test('transition function throws error if next node is missing', (done) => {
-    assert.that(() => {
-      testNode.transition('tiberius');
-    }).is.throwing('Transition target node is missing.');
+    assert
+      .that(() => {
+        testNode.transition('tiberius');
+      })
+      .is.throwing('Transition target node is missing.');
     done();
   });
 
   test('transition function throws error if execution callback is missing', (done) => {
-    assert.that(() => {
-      testNode.transition('clemens', 'caligula');
-    }).is.throwing('Transition execution callback is missing.');
+    assert
+      .that(() => {
+        testNode.transition('clemens', 'caligula');
+      })
+      .is.throwing('Transition execution callback is missing.');
     done();
   });
 
   test('transition function creates transition', (done) => {
-    testNode.transition('claudius', 'scribonianus', () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    testNode.transition('claudius', 'scribonianus', () => {});
     assert.that(testNode.transitions.claudius).is.not.undefined();
     done();
   });
@@ -68,67 +76,79 @@ suite('stateMachine.Node', () => {
   });
 
   test('getTransition function returns transition', (done) => {
-    testNode.transition('claudius', 'scribonianus', () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    testNode.transition('claudius', 'scribonianus', () => {});
     assert.that(testNode.getTransition('claudius')).is.not.undefined();
     assert.that(testNode.getTransition('claudius')).is.instanceOf(Transition);
     done();
   });
 
   test('leave function throws error if leave function is missing', (done) => {
-    assert.that(() => {
-      testNode.leave();
-    }).is.throwing('Leave-callback is missing.');
+    assert
+      .that(() => {
+        testNode.leave();
+      })
+      .is.throwing('Leave-callback is missing.');
     done();
   });
 
   test('leave function throws error if callback is not a function', (done) => {
-    assert.that(() => {
-      testNode.leave({});
-    }).is.throwing('Leave-callback is not a function.');
+    assert
+      .that(() => {
+        testNode.leave({});
+      })
+      .is.throwing('Leave-callback is not a function.');
     done();
   });
 
   test('leave function creates leave transition', (done) => {
-    testNode.leave(async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    testNode.leave(async () => {});
     assert.that(testNode.leaveTransition).is.not.undefined();
     assert.that(testNode.leaveTransition.getName()).is.equalTo('leave');
     done();
   });
 
   test('enter function throws error if enter function is missing', (done) => {
-    assert.that(() => {
-      testNode.enter();
-    }).is.throwing('Enter-callback is missing.');
+    assert
+      .that(() => {
+        testNode.enter();
+      })
+      .is.throwing('Enter-callback is missing.');
     done();
   });
 
   test('enter function throws error if callback is not a function', (done) => {
-    assert.that(() => {
-      testNode.enter({});
-    }).is.throwing('Enter-callback is not a function.');
+    assert
+      .that(() => {
+        testNode.enter({});
+      })
+      .is.throwing('Enter-callback is not a function.');
     done();
   });
 
   test('enter function creates enter transition', (done) => {
-    testNode.enter(async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    testNode.enter(async () => {});
     assert.that(testNode.enterTransition).is.not.undefined();
     assert.that(testNode.enterTransition.getName()).is.equalTo('enter');
     done();
   });
 
   test('runLeave function throws error if machine is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runLeave();
-    }).is.throwingAsync('Machine is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runLeave();
+      })
+      .is.throwingAsync('Machine is missing.');
   });
 
   test('runLeave function throws error if payload is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runLeave({});
-    }).is.throwingAsync('Payload is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runLeave({});
+      })
+      .is.throwingAsync('Payload is missing.');
   });
 
   test('runLeave function calls leave function', async () => {
@@ -148,15 +168,19 @@ suite('stateMachine.Node', () => {
   });
 
   test('runEnter function throws error if machine is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runEnter();
-    }).is.throwingAsync('Machine is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runEnter();
+      })
+      .is.throwingAsync('Machine is missing.');
   });
 
   test('runEnter function throws error if payload is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runEnter({});
-    }).is.throwingAsync('Payload is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runEnter({});
+      })
+      .is.throwingAsync('Payload is missing.');
   });
 
   test('runEnter function calls enter function', async () => {
@@ -176,21 +200,27 @@ suite('stateMachine.Node', () => {
   });
 
   test('runTransit function throws error if machine is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runTransit();
-    }).is.throwingAsync('Machine is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runTransit();
+      })
+      .is.throwingAsync('Machine is missing.');
   });
 
   test('runTransit function throws error if transition name missing', async () => {
-    await assert.that(async () => {
-      await testNode.runTransit({});
-    }).is.throwingAsync('Transition name is missing.');
+    await assert
+      .that(async () => {
+        await testNode.runTransit({});
+      })
+      .is.throwingAsync('Transition name is missing.');
   });
 
   test('runTransit function throws error if transition is missing', async () => {
-    await assert.that(async () => {
-      await testNode.runTransit({}, 'kill nero', {});
-    }).is.throwingAsync('Transition missing.');
+    await assert
+      .that(async () => {
+        await testNode.runTransit({}, 'kill nero', {});
+      })
+      .is.throwingAsync('Transition missing.');
   });
 
   test('runTransit function executes transition', async () => {

@@ -10,8 +10,8 @@ suite('stateMachine.Machine', () => {
   let TestMachine;
 
   setup((done) => {
-    TestMachine = function () {
-    };
+    // eslint-disable-next-line no-empty-function
+    TestMachine = function() {};
     _.extend(TestMachine.prototype, Machine.prototype);
     TestMachine.prototype.init();
     done();
@@ -23,11 +23,13 @@ suite('stateMachine.Machine', () => {
   });
 
   test('throws error if instantiated', (done) => {
-    assert.that(() => {
-      /* eslint-disable no-new */
-      new Machine();
-      /* eslint-enable no-new */
-    }).is.throwing('Do not call this function.');
+    assert
+      .that(() => {
+        /* eslint-disable no-new */
+        new Machine();
+        /* eslint-enable no-new */
+      })
+      .is.throwing('Do not call this function.');
     done();
   });
 
@@ -43,9 +45,11 @@ suite('stateMachine.Machine', () => {
   });
 
   test('node function throws error if node name is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.node();
-    }).is.throwing('Node name is missing.');
+    assert
+      .that(() => {
+        TestMachine.prototype.node();
+      })
+      .is.throwing('Node name is missing.');
     done();
   });
 
@@ -71,16 +75,20 @@ suite('stateMachine.Machine', () => {
   });
 
   test('initialNode function throws error if node name is missing', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.initialNode();
-    }).is.throwing('Node name is missing.');
+    assert
+      .that(() => {
+        TestMachine.prototype.initialNode();
+      })
+      .is.throwing('Node name is missing.');
     done();
   });
 
   test('initialNode function throws error if node name is invalid', (done) => {
-    assert.that(() => {
-      TestMachine.prototype.initialNode('hugo');
-    }).is.throwing('Invalid node name.');
+    assert
+      .that(() => {
+        TestMachine.prototype.initialNode('hugo');
+      })
+      .is.throwing('Invalid node name.');
     done();
   });
 
@@ -96,15 +104,19 @@ suite('stateMachine.Machine', () => {
   });
 
   test('transit function throws error if transition name is missing', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.transit();
-    }).is.throwingAsync('Transition name is missing.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.transit();
+      })
+      .is.throwingAsync('Transition name is missing.');
   });
 
   test('transit function throws error if initial node is missing', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.transit('a-z');
-    }).is.throwingAsync('Initial node is missing.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.transit('a-z');
+      })
+      .is.throwingAsync('Initial node is missing.');
   });
 
   test('transit function throws an error if leave-execution callback fails', async () => {
@@ -120,9 +132,11 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('bleibDa');
-    }).is.throwingAsync('ohoh');
+    await assert
+      .that(async () => {
+        await testMachine.transit('bleibDa');
+      })
+      .is.throwingAsync('ohoh');
   });
 
   test('transit function throws an error if execution callback fails', async () => {
@@ -135,9 +149,11 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('bleibDa');
-    }).is.throwingAsync('hopperla');
+    await assert
+      .that(async () => {
+        await testMachine.transit('bleibDa');
+      })
+      .is.throwingAsync('hopperla');
   });
 
   test('transit function throws an error if transition is unknown', async () => {
@@ -146,30 +162,34 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('nichtDa');
-    }).is.throwingAsync('Transition missing.');
+    await assert
+      .that(async () => {
+        await testMachine.transit('nichtDa');
+      })
+      .is.throwingAsync('Transition missing.');
   });
 
   test('transit function throws error if next node is unknown', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('gehe-ins', 'nirvana', async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    Hugo.transition('gehe-ins', 'nirvana', async () => {});
     TestMachine.prototype.initialNode('hugo');
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('gehe-ins');
-    }).is.throwingAsync('Invalid node name.');
+    await assert
+      .that(async () => {
+        await testMachine.transit('gehe-ins');
+      })
+      .is.throwingAsync('Invalid node name.');
   });
 
   test('transit function returns error if enter callback fails', async () => {
     const Hugo = TestMachine.prototype.node('hugo');
 
-    Hugo.transition('bleibDa', 'hugo', async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    Hugo.transition('bleibDa', 'hugo', async () => {});
     Hugo.enter(async () => {
       throw new Error('noe');
     });
@@ -177,9 +197,11 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('bleibDa');
-    }).is.throwingAsync('noe');
+    await assert
+      .that(async () => {
+        await testMachine.transit('bleibDa');
+      })
+      .is.throwingAsync('noe');
   });
 
   test('transit function executes transitions', async () => {
@@ -188,14 +210,16 @@ suite('stateMachine.Machine', () => {
     TestMachine.prototype.commodus = 'Commodus';
 
     TestMachine.prototype.node(TestMachine.prototype.markAurel);
-    TestMachine.prototype.node(TestMachine.prototype.verus).
-      transition('predecessor', TestMachine.prototype.markAurel, async () => {
-      }).
-      transition('successor', TestMachine.prototype.commodus, async () => {
-      });
-    TestMachine.prototype.node(TestMachine.prototype.commodus).
-      transition('predecessor', TestMachine.prototype.verus, async () => {
-      });
+    TestMachine.prototype
+      .node(TestMachine.prototype.verus)
+      // eslint-disable-next-line no-empty-function
+      .transition('predecessor', TestMachine.prototype.markAurel, async () => {})
+      // eslint-disable-next-line no-empty-function
+      .transition('successor', TestMachine.prototype.commodus, async () => {});
+    TestMachine.prototype
+      .node(TestMachine.prototype.commodus)
+      // eslint-disable-next-line no-empty-function
+      .transition('predecessor', TestMachine.prototype.verus, async () => {});
 
     TestMachine.prototype.initialNode('Verus');
 
@@ -213,10 +237,9 @@ suite('stateMachine.Machine', () => {
   });
 
   test('transit function inhibits parallel executions', async () => {
-    TestMachine.prototype.node('Pertinax').
-      transition('stays', 'Pertinax', async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      });
+    TestMachine.prototype.node('Pertinax').transition('stays', 'Pertinax', async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
 
     TestMachine.prototype.initialNode('Pertinax');
 
@@ -225,45 +248,55 @@ suite('stateMachine.Machine', () => {
     assert.that(testMachine.getCurrentTransition()).is.undefined();
     testMachine.transit('stays');
 
-    await assert.that(async () => {
-      await testMachine.transit('stays');
-    }).is.throwingAsync('Transition running.');
+    await assert
+      .that(async () => {
+        await testMachine.transit('stays');
+      })
+      .is.throwingAsync('Transition running.');
   });
 
   test('preTransition function throws error if callback is missing', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.preTransition();
-    }).is.throwingAsync('Pre-transition callback is missing.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.preTransition();
+      })
+      .is.throwingAsync('Pre-transition callback is missing.');
   });
 
   test('preTransition function throws error if callback is not a function', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.preTransition({});
-    }).is.throwingAsync('Pre-transition-callback is not a function.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.preTransition({});
+      })
+      .is.throwingAsync('Pre-transition-callback is not a function.');
   });
 
   test('preTransition function creates preTransit transition', async () => {
-    TestMachine.prototype.preTransition(async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    TestMachine.prototype.preTransition(async () => {});
     assert.that(TestMachine.prototype.preTransit).is.not.undefined();
     assert.that(TestMachine.prototype.preTransit.getName()).is.equalTo('preTransition');
   });
 
   test('postTransition function throws error if callback is missing', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.postTransition();
-    }).is.throwingAsync('Post-transition callback is missing.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.postTransition();
+      })
+      .is.throwingAsync('Post-transition callback is missing.');
   });
 
   test('postTransition function throws error if callback is not a function', async () => {
-    await assert.that(async () => {
-      await TestMachine.prototype.postTransition({});
-    }).is.throwingAsync('Post-transition-callback is not a function.');
+    await assert
+      .that(async () => {
+        await TestMachine.prototype.postTransition({});
+      })
+      .is.throwingAsync('Post-transition-callback is not a function.');
   });
 
   test('postTransition function creates preTransit transition', async () => {
-    TestMachine.prototype.postTransition(async () => {
-    });
+    // eslint-disable-next-line no-empty-function
+    TestMachine.prototype.postTransition(async () => {});
     assert.that(TestMachine.prototype.postTransit).is.not.undefined();
     assert.that(TestMachine.prototype.postTransit.getName()).is.equalTo('postTransition');
   });
@@ -277,15 +310,16 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('selfish');
-    }).is.throwingAsync('usurpator killed');
+    await assert
+      .that(async () => {
+        await testMachine.transit('selfish');
+      })
+      .is.throwingAsync('usurpator killed');
   });
 
   test('transit function returns error if postTransition callback fails', async () => {
-    TestMachine.prototype.node('Didius Julianus').
-      transition('selfish', 'Didius Julianus', async () => {
-      });
+    // eslint-disable-next-line no-empty-function
+    TestMachine.prototype.node('Didius Julianus').transition('selfish', 'Didius Julianus', async () => {});
 
     TestMachine.prototype.postTransition(async () => {
       throw new Error('Already replaced by Septimius Severus');
@@ -294,9 +328,11 @@ suite('stateMachine.Machine', () => {
 
     const testMachine = new TestMachine();
 
-    await assert.that(async () => {
-      await testMachine.transit('selfish');
-    }).is.throwingAsync('Already replaced by Septimius Severus');
+    await assert
+      .that(async () => {
+        await testMachine.transit('selfish');
+      })
+      .is.throwingAsync('Already replaced by Septimius Severus');
   });
 
   test('two machine instances share same nodes', async () => {
@@ -313,9 +349,8 @@ suite('stateMachine.Machine', () => {
   });
 
   test('two machine instances have different properties', async () => {
-    TestMachine.prototype.node('Caracalla').
-      transition('back', 'Septimius Severus', async () => {
-      });
+    // eslint-disable-next-line no-empty-function
+    TestMachine.prototype.node('Caracalla').transition('back', 'Septimius Severus', async () => {});
     TestMachine.prototype.node('Septimius Severus');
     TestMachine.prototype.initialNode('Caracalla');
 
