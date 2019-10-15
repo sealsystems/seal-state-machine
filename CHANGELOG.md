@@ -1,3 +1,35 @@
+## 0.2.0 (2019-10-14)
+
+### Features
+
+
+#### PLS-431 ([45cae33](https://github.com/sealsystems/node-state-machine/commit/45cae33))
+
+- Removed roboter
+ - Updated CircleCI config
+ - Updated appveyor config
+ - Updated GitHub Pull Request template
+ - Updated dependencies
+ - Added dependabot config
+ - Added `package-lock.json` to git
+ - Fixed linting
+ - Used `seal-node:oss-module-update`
+#### PLS-431 ([77a1d9e](https://github.com/sealsystems/node-state-machine/commit/77a1d9e))
+
+- Removed roboter
+ - Installed latest dev stack
+ - Updated scripts
+ - Updated GitHub Pull Request template
+ - Updated CircleCI config
+ - Updated appveyor config
+ - Updated dependencies
+ - Added dependabot config
+ - Added `package-lock.json` to git
+ - Fixed linting
+
+
+---
+
 ## 0.1.1 (2018-09-09)
 
 ### Bug Fixes

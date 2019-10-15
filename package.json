@@ -1,6 +1,6 @@
 {
   "name": "@sealsystems/state-machine",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Finite state machine",
   "author": {
     "name": "SEAL Systems AG",
@@ -36,6 +36,7 @@
     "extends": "@sealsystems/semantic-release/node-module"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "http://plossys.jfrog.io/plossys/api/npm/npm-local"
   }
 }
