@@ -1,3 +1,15 @@
+## 0.2.1 (2019-10-15)
+
+### Bug Fixes
+
+
+#### PLS-431 - bump version ([7096e87](https://github.com/sealsystems/node-state-machine/commit/7096e87))
+
+Removed `registry`-entry from `package.json` to allow for releases.
+
+
+---
+
 ## 0.2.0 (2019-10-14)
 
 ### Features
