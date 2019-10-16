@@ -1,3 +1,14 @@
+## 0.2.2 (2019-10-16)
+
+### Bug Fixes
+
+
+#### Retrigger release ([9d24c4b](https://github.com/sealsystems/node-state-machine/commit/9d24c4b))
+
+
+
+---
+
 ## 0.2.1 (2019-10-15)
 
 ### Bug Fixes
