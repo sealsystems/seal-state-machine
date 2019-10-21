@@ -1,3 +1,15 @@
+## 0.2.3 (2019-10-21)
+
+### Bug Fixes
+
+
+#### Removed registry from package.json ([a27362a](https://github.com/sealsystems/node-state-machine/commit/a27362a))
+
+Removed registry from package.json to allow release.
+
+
+---
+
 ## 0.2.2 (2019-10-16)
 
 ### Bug Fixes
