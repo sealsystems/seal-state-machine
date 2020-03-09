@@ -1,3 +1,14 @@
+## 0.2.4 (2020-03-09)
+
+### Chores
+
+
+#### Swichted to github-actions. ([61dd313](https://github.com/sealsystems/node-state-machine/commit/61dd313))
+
+
+
+---
+
 ## 0.2.3 (2019-10-21)
 
 ### Bug Fixes
