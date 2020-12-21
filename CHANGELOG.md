@@ -1,3 +1,10 @@
+## 0.2.5 (2020-12-21)
+
+### Chores
+
+
+Trigger release ([b1ba1d4](https://github.com/sealsystems/node-state-machine/commit/b1ba1d4))
+
 ## 0.2.4 (2020-03-09)
 
 ### Chores
