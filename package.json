@@ -1,6 +1,6 @@
 {
   "name": "@sealsystems/state-machine",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Finite state machine",
   "author": {
     "name": "SEAL Systems AG",

@@ -1,3 +1,12 @@
+## 0.2.6 (2020-12-26)
+
+### Chores
+
+
+Update build configuration ([e35f49e](https://github.com/sealsystems/node-state-machine/commit/e35f49e))
+
+Update build configuration ([792838c](https://github.com/sealsystems/node-state-machine/commit/792838c))
+
 ## 0.2.5 (2020-12-21)
 
 ### Chores
