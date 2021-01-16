@@ -1,3 +1,10 @@
+## 0.2.7 (2021-01-16)
+
+### Chores
+
+
+Update build config ([d88cfe8](https://github.com/sealsystems/node-state-machine/commit/d88cfe8))
+
 ## 0.2.6 (2020-12-26)
 
 ### Chores
